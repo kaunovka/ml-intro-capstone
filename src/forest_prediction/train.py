@@ -53,6 +53,18 @@ from sklearn.preprocessing import StandardScaler
     show_default=True,
 )
 @click.option(
+    "--n_estimators",
+    default=100,
+    type=int,
+    show_default=True,
+)
+@click.option(
+    "--max_depth",
+    default=None,
+    type=int,
+    show_default=True,
+)
+@click.option(
     "--random-state",
     default=123,
     type=int,
@@ -65,6 +77,8 @@ def train(
         use_scaler: bool,
         max_iter: int,
         logreg_c: int,
+        n_estimators: int,
+        max_depth: int,
         random_state: int) -> None:
     dataset = pd.read_csv(dataset_path)
     click.echo(f"Dataset shape: {dataset.shape}.")
@@ -77,7 +91,7 @@ def train(
     if (model == 'logreg'):
         steps.append(('classifier', LogisticRegression(random_state=random_state, max_iter=max_iter, C=logreg_c)))
     if (model == 'randomforest'):
-        steps.append(('classifier', RandomForestClassifier(random_state=random_state)))
+        steps.append(('classifier', RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=random_state)))
 
     pipeline = Pipeline(steps)
 
