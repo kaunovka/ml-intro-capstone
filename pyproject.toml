@@ -6,6 +6,7 @@ authors = ["kaunovka <kaunovka@gmail.com>"]
 
 [tool.poetry.scripts]
 eda = "forest_prediction.generate_eda:generate"
+train = "forest_prediction.train:train"
 
 [tool.poetry.dependencies]
 python = "^3.9"
