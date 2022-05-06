@@ -8,6 +8,7 @@ import mlflow
 import mlflow.sklearn
 
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_validate
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -26,6 +27,12 @@ from sklearn.preprocessing import StandardScaler
     default="data/model.joblib",
     type=click.Path(dir_okay=False, writable=True, path_type=Path),
     show_default=True,
+)
+@click.option(
+    "--model",
+    default="logreg",
+    type = click.Choice(['logreg', 'randomforest']),
+    show_default=True
 )
 @click.option(
     "--use-scaler",
@@ -54,6 +61,7 @@ from sklearn.preprocessing import StandardScaler
 def train(
         dataset_path: Path, 
         save_model_path: Path,
+        model: str,
         use_scaler: bool,
         max_iter: int,
         logreg_c: int,
@@ -66,7 +74,10 @@ def train(
     steps = []
     if (use_scaler):
         steps.append(('scaler', StandardScaler()))
-    steps.append(('classifier', LogisticRegression(random_state=random_state, max_iter=max_iter, C=logreg_c)))
+    if (model == 'logreg'):
+        steps.append(('classifier', LogisticRegression(random_state=random_state, max_iter=max_iter, C=logreg_c)))
+    if (model == 'randomforest'):
+        steps.append(('classifier', RandomForestClassifier(random_state=random_state)))
 
     pipeline = Pipeline(steps)
 
