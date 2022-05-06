@@ -99,6 +99,7 @@ def train(
     roc_auc = cv_results['test_roc_auc_ovr'].mean()
     f1 = cv_results['test_f1_micro'].mean()
 
+    mlflow.log_param("model", model)
     mlflow.log_param("max_iter", max_iter)
     mlflow.log_param("logreg_c", logreg_c)
     mlflow.log_param("use_scaler", use_scaler)
