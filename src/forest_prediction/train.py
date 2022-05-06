@@ -52,13 +52,13 @@ from sklearn.preprocessing import StandardScaler
     show_default=True,
 )
 @click.option(
-    "--n_estimators",
+    "--n-estimators",
     default=100,
     type=int,
     show_default=True,
 )
 @click.option(
-    "--max_depth",
+    "--max-depth",
     default=None,
     type=int,
     show_default=True,
