@@ -24,14 +24,37 @@ from sklearn.preprocessing import StandardScaler
     type=click.Path(dir_okay=False, writable=True, path_type=Path),
     show_default=True,
 )
-def train(dataset_path: Path, save_model_path: Path) -> None:
+@click.option(
+    "--max-iter",
+    default=100,
+    type=int,
+    show_default=True,
+)
+@click.option(
+    "--logreg-c",
+    default=1.0,
+    type=float,
+    show_default=True,
+)
+@click.option(
+    "--random-state",
+    default=123,
+    type=int,
+    show_default=True,
+)
+def train(
+        dataset_path: Path, 
+        save_model_path: Path,
+        max_iter: int,
+        logreg_c: int,
+        random_state: int) -> None:
     dataset = pd.read_csv(dataset_path)
     click.echo(f"Dataset shape: {dataset.shape}.")
     X = dataset.drop(['Id', 'Cover_Type'], axis=1)
     y = dataset['Cover_Type']
     pipeline = Pipeline(
         [('scaler', StandardScaler()),
-         ('classifier', LogisticRegression(random_state=123, max_iter=3000))]
+         ('classifier', LogisticRegression(random_state=random_state, max_iter=max_iter, C=logreg_c))]
     )
     cv_results = cross_validate(pipeline, X, y, cv=3, scoring=['accuracy', 'roc_auc_ovr', 'f1_micro'])
     click.echo(f"Accuracy: {cv_results['test_accuracy'].mean()}")
