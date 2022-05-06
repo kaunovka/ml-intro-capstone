@@ -5,7 +5,6 @@ import click
 import pandas as pd
 
 import mlflow
-import mlflow.sklearn
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
@@ -103,6 +102,8 @@ def train(
     mlflow.log_param("max_iter", max_iter)
     mlflow.log_param("logreg_c", logreg_c)
     mlflow.log_param("use_scaler", use_scaler)
+    mlflow.log_param("n_estimators", n_estimators)
+    mlflow.log_param("max_depth", max_depth)
     mlflow.log_metric("accuracy", accuracy)
     mlflow.log_metric("roc_auc", roc_auc)
     mlflow.log_metric("f1", f1)
