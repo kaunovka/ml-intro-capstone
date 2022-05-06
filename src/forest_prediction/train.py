@@ -6,6 +6,8 @@ import pandas as pd
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_validate
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 @click.command()
 @click.option(
@@ -27,10 +29,13 @@ def train(dataset_path: Path, save_model_path: Path) -> None:
     click.echo(f"Dataset shape: {dataset.shape}.")
     X = dataset.drop(['Id', 'Cover_Type'], axis=1)
     y = dataset['Cover_Type']
-    clf = LogisticRegression(random_state=123, max_iter=10000)
-    cv_results = cross_validate(clf, X, y, cv=3, scoring=['accuracy', 'roc_auc_ovr', 'f1_micro'])
+    pipeline = Pipeline(
+        [('scaler', StandardScaler()),
+         ('classifier', LogisticRegression(random_state=123, max_iter=3000))]
+    )
+    cv_results = cross_validate(pipeline, X, y, cv=3, scoring=['accuracy', 'roc_auc_ovr', 'f1_micro'])
     click.echo(f"Accuracy: {cv_results['test_accuracy'].mean()}")
     click.echo(f"ROC_AUC: {cv_results['test_roc_auc_ovr'].mean()}")
     click.echo(f"F1: {cv_results['test_f1_micro'].mean()}")
-    dump(clf, save_model_path)
+    dump(pipeline, save_model_path)
     click.echo(f'Model saved to {save_model_path}')
