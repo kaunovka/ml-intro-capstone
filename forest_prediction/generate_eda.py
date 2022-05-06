@@ -14,10 +14,10 @@ import click
 @click.option(
     "-o",
     "--output-path",
-    default="data/",
+    default="data/report.html",
     type=click.Path(dir_okay=True, path_type=Path)
 )
 def generate(dataset_path : Path, output_path: Path) -> None:
     data = pd.read_csv(dataset_path)
     report = ProfileReport(data)
-    report.to_file(output_path.join('report.html'))
+    report.to_file(output_path)
