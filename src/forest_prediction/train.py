@@ -77,6 +77,7 @@ def train(
 
     mlflow.log_param("max_iter", max_iter)
     mlflow.log_param("logreg_c", logreg_c)
+    mlflow.log_param("use_scaler", use_scaler)
     mlflow.log_metric("accuracy", accuracy)
     mlflow.log_metric("roc_auc", roc_auc)
     mlflow.log_metric("f1", f1)
