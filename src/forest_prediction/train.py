@@ -7,15 +7,12 @@ import numpy as np
 
 import mlflow
 
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
-from sklearn.model_selection import GridSearchCV, cross_validate, KFold
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import GridSearchCV, KFold
 
 from tqdm import tqdm
 
+from .pipeline import create_pipeline
 
 @click.command()
 @click.option(
@@ -76,42 +73,7 @@ def train(
     X = dataset.drop(["Id", "Cover_Type"], axis=1)
     y = dataset["Cover_Type"]
 
-    steps = []
-    if use_scaler:
-        steps.append(("scaler", StandardScaler()))
-    if model == "logreg":
-        steps.append(
-            (
-                "classifier",
-                LogisticRegression(
-                    random_state=random_state, max_iter=max_iter, multi_class='ovr'
-                ),
-            )
-        )
-    if model == "randomforest":
-        steps.append(
-            (
-                "classifier",
-                RandomForestClassifier(
-                    n_estimators=n_estimators,
-                    random_state=random_state,
-                    n_jobs=-1
-                ),
-            )
-        )
-
-    pipeline = Pipeline(steps)
-
-    if model == 'logreg':
-            grid = {
-                'classifier__C': [1e-4, 1e-2, 1e-1, 1, 5],
-            }
-    if model == 'randomforest':
-        grid = {
-            'classifier__max_depth': [None, 3, 5, 10, 20],
-            'classifier__criterion': ['gini', 'entropy'],
-            'classifier__max_features': ['sqrt', 'log2', None]
-        }
+    pipeline, grid = create_pipeline(model, use_scaler, max_iter, n_estimators, random_state)
 
     n_outer = 10
     cv_outer = KFold(n_splits=n_outer, shuffle=True, random_state=random_state)
