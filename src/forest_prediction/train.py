@@ -14,6 +14,8 @@ from sklearn.model_selection import GridSearchCV, cross_validate, KFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
+from tqdm import tqdm
+
 
 @click.command()
 @click.option(
@@ -111,12 +113,13 @@ def train(
             'classifier__max_features': ['sqrt', 'log2', None]
         }
 
-    cv_outer = KFold(n_splits=10, shuffle=True, random_state=random_state)
+    n_outer = 10
+    cv_outer = KFold(n_splits=n_outer, shuffle=True, random_state=random_state)
     outer_results = {}
     outer_results['accuracy'] = []
     outer_results['roc_auc'] = []
     outer_results['f1'] = []
-    for train_ix, test_ix in cv_outer.split(X):
+    for train_ix, test_ix in tqdm(cv_outer.split(X), total=n_outer):
         X_train, X_test = X.iloc[train_ix], X.iloc[test_ix]
         y_train, y_test = y.iloc[train_ix], y.iloc[test_ix]
 
