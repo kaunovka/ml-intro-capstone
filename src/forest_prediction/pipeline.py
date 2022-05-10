@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 
 from typing import Tuple
 
+
 def create_pipeline(
     model: str, use_scaler: bool, max_iter: int, n_estimators: int, random_state: int
 ) -> Tuple[Pipeline, dict]:
@@ -16,7 +17,7 @@ def create_pipeline(
             (
                 "classifier",
                 LogisticRegression(
-                    random_state=random_state, max_iter=max_iter, multi_class='ovr'
+                    random_state=random_state, max_iter=max_iter, multi_class="ovr"
                 ),
             )
         )
@@ -25,24 +26,22 @@ def create_pipeline(
             (
                 "classifier",
                 RandomForestClassifier(
-                    n_estimators=n_estimators,
-                    random_state=random_state,
-                    n_jobs=-1
+                    n_estimators=n_estimators, random_state=random_state, n_jobs=-1
                 ),
             )
         )
 
     pipeline = Pipeline(steps)
 
-    if model == 'logreg':
-            grid = {
-                'classifier__C': [1e-4, 1e-2, 1e-1, 1, 5],
-            }
-    if model == 'randomforest':
+    if model == "logreg":
         grid = {
-            'classifier__max_depth': [None, 3, 5, 10, 20],
-            'classifier__criterion': ['gini', 'entropy'],
-            'classifier__max_features': ['sqrt', 'log2', None]
+            "classifier__C": [1e-4, 1e-2, 1e-1, 1, 5],
+        }
+    if model == "randomforest":
+        grid = {
+            "classifier__max_depth": [None, 3, 5, 10, 20],
+            "classifier__criterion": ["gini", "entropy"],
+            "classifier__max_features": ["sqrt", "log2", None],
         }
 
     return pipeline, grid

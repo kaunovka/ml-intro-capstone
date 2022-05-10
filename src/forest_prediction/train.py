@@ -14,6 +14,7 @@ from tqdm import tqdm
 
 from .pipeline import create_pipeline
 
+
 @click.command()
 @click.option(
     "-d",
@@ -73,28 +74,35 @@ def train(
     X = dataset.drop(["Id", "Cover_Type"], axis=1)
     y = dataset["Cover_Type"]
 
-    pipeline, grid = create_pipeline(model, use_scaler, max_iter, n_estimators, random_state)
+    pipeline, grid = create_pipeline(
+        model, use_scaler, max_iter, n_estimators, random_state
+    )
 
     n_outer = 10
     cv_outer = KFold(n_splits=n_outer, shuffle=True, random_state=random_state)
     outer_results = {}
-    outer_results['accuracy'] = []
-    outer_results['roc_auc'] = []
-    outer_results['f1'] = []
+    outer_results["accuracy"] = []
+    outer_results["roc_auc"] = []
+    outer_results["f1"] = []
     for train_ix, test_ix in tqdm(cv_outer.split(X), total=n_outer):
         X_train, X_test = X.iloc[train_ix], X.iloc[test_ix]
         y_train, y_test = y.iloc[train_ix], y.iloc[test_ix]
 
         cv_inner = KFold(n_splits=3, shuffle=True, random_state=random_state)
 
-        clf = GridSearchCV(pipeline, grid, scoring='accuracy', cv=cv_inner, refit=True)
+        clf = GridSearchCV(pipeline, grid, scoring="accuracy", cv=cv_inner, refit=True)
         clf.fit(X_train, y_train)
         best_model = clf.best_estimator_
 
-        outer_results['accuracy'].append(accuracy_score(y_test, best_model.predict(X_test)))
-        outer_results['roc_auc'].append(roc_auc_score(y_test, best_model.predict_proba(X_test), multi_class='ovr'))
-        outer_results['f1'].append(f1_score(y_test, best_model.predict(X_test), average='micro'))
-
+        outer_results["accuracy"].append(
+            accuracy_score(y_test, best_model.predict(X_test))
+        )
+        outer_results["roc_auc"].append(
+            roc_auc_score(y_test, best_model.predict_proba(X_test), multi_class="ovr")
+        )
+        outer_results["f1"].append(
+            f1_score(y_test, best_model.predict(X_test), average="micro")
+        )
 
     accuracy = np.mean(outer_results["accuracy"])
     roc_auc = np.mean(outer_results["roc_auc"])
@@ -103,11 +111,11 @@ def train(
     click.echo(f"Accuracy: {accuracy}")
     click.echo(f"ROC_AUC: {roc_auc}")
     click.echo(f"F1: {f1}")
-    mlflow.log_metric('accuracy', accuracy)
-    mlflow.log_metric('roc_auc', roc_auc)
-    mlflow.log_metric('f1', f1)
+    mlflow.log_metric("accuracy", accuracy)
+    mlflow.log_metric("roc_auc", roc_auc)
+    mlflow.log_metric("f1", f1)
 
-    clf = GridSearchCV(pipeline, grid, scoring='accuracy', cv=3)
+    clf = GridSearchCV(pipeline, grid, scoring="accuracy", cv=3)
     clf.fit(X, y)
     best_model = clf.best_estimator_
     best_model.fit(X, y)
