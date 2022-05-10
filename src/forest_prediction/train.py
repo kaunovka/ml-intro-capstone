@@ -14,6 +14,8 @@ from tqdm import tqdm
 
 from .pipeline import create_pipeline
 
+from typing import Dict, List
+
 
 @click.command()
 @click.option(
@@ -80,7 +82,7 @@ def train(
 
     n_outer = 10
     cv_outer = KFold(n_splits=n_outer, shuffle=True, random_state=random_state)
-    outer_results = {}
+    outer_results: Dict[str, List[float]] = {}
     outer_results["accuracy"] = []
     outer_results["roc_auc"] = []
     outer_results["f1"] = []
