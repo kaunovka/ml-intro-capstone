@@ -3,7 +3,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from typing import Tuple
+from typing import Dict, Tuple, Any
 
 
 def create_pipeline(
@@ -41,15 +41,12 @@ def create_pipeline(
 
     pipeline = Pipeline(steps)
 
+    grid: Dict[str, Any] = dict()
     if model == "logreg":
-        grid = {
-            "classifier__C": [1e-4, 1e-2, 1e-1, 1, 5],
-        }
+        grid["classifier__C"] = ([1e-4, 1e-2, 1e-1, 1, 5],)
     if model == "randomforest":
-        grid = {
-            "classifier__max_depth": [None, 3, 5, 10, 20],
-            "classifier__criterion": ["gini", "entropy"],
-            "classifier__max_features": ["sqrt", "log2", None],
-        }
+        grid["classifier__max_depth"] = ([None, 3, 5, 10, 20],)
+        grid["classifier__criterion"] = (["gini", "entropy"],)
+        grid["classifier__max_features"] = (["sqrt", "log2", None],)
 
     return pipeline, grid

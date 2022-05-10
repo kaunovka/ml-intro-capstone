@@ -92,9 +92,7 @@ def train(
 
         cv_inner = KFold(n_splits=3, shuffle=True, random_state=random_state)
 
-        clf = GridSearchCV(
-            pipeline, grid, scoring="accuracy", cv=cv_inner, refit=True
-        )
+        clf = GridSearchCV(pipeline, grid, scoring="accuracy", cv=cv_inner, refit=True)
         clf.fit(X_train, y_train)
         best_model = clf.best_estimator_
 
@@ -102,9 +100,7 @@ def train(
             accuracy_score(y_test, best_model.predict(X_test))
         )
         outer_results["roc_auc"].append(
-            roc_auc_score(
-                y_test, best_model.predict_proba(X_test), multi_class="ovr"
-            )
+            roc_auc_score(y_test, best_model.predict_proba(X_test), multi_class="ovr")
         )
         outer_results["f1"].append(
             f1_score(y_test, best_model.predict(X_test), average="micro")
