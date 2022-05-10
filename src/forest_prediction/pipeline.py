@@ -7,7 +7,11 @@ from typing import Tuple
 
 
 def create_pipeline(
-    model: str, use_scaler: bool, max_iter: int, n_estimators: int, random_state: int
+    model: str,
+    use_scaler: bool,
+    max_iter: int,
+    n_estimators: int,
+    random_state: int,
 ) -> Tuple[Pipeline, dict]:
     steps = []
     if use_scaler:
@@ -17,7 +21,9 @@ def create_pipeline(
             (
                 "classifier",
                 LogisticRegression(
-                    random_state=random_state, max_iter=max_iter, multi_class="ovr"
+                    random_state=random_state,
+                    max_iter=max_iter,
+                    multi_class="ovr",
                 ),
             )
         )
@@ -26,7 +32,9 @@ def create_pipeline(
             (
                 "classifier",
                 RandomForestClassifier(
-                    n_estimators=n_estimators, random_state=random_state, n_jobs=-1
+                    n_estimators=n_estimators,
+                    random_state=random_state,
+                    n_jobs=-1,
                 ),
             )
         )
