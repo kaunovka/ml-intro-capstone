@@ -26,6 +26,6 @@ poetry run mlflow ui
 ## Screenshots for assingment
 8.
 ![mlflow](https://user-images.githubusercontent.com/47551616/167790322-0952ce27-b3bb-45bd-8159-1e7bc7e55c25.png)
-12.
+12-13.
 
 ![black_reformatted](https://user-images.githubusercontent.com/47551616/167790437-3d555866-916a-46dc-8bf4-bea590ba52ba.png)
